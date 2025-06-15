@@ -5,92 +5,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   
   <title>Future Smart Logistics</title>
-  
-  <!-- Favicon & Manifest -->
-  <link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
-  <link rel="manifest" href="manifest.json">
+  <!-- Favicon for modern browsers -->
+  <link rel="icon"         href="icon-32.png"    sizes="32x32"   type="image/png">
+  <link rel="icon"         href="icon-192.png"   sizes="192x192" type="image/png">
+  <!-- Fallback for older browsers -->
+  <link rel="shortcut icon" href="icon-32.png"   type="image/png">
+  <link rel="manifest"     href="manifest.json">
   <meta name="theme-color" content="#003366">
   
   <style>
-    /* Zoom everything to 75% */
-    html { zoom: 75%; }
-    
-    * { box-sizing: border-box; }
-    body {
+    /* 1) Enforce 75% zoom */
+    html {
+      zoom: 75%;
+    }
+    /* 2) Full‑height container */
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f5f9fc;
       color: #333;
+      overflow: hidden;  /* prevent extra scrollbars */
     }
+
+    /* 3) Header is a fixed 60px tall */
     header {
+      height: 60px;
+      line-height: 60px;
       text-align: center;
-      padding: 0.8rem;
       background-color: #003366;
       color: #fff;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      flex: 0 0 60px;
     }
-    header h1 { margin: 0; font-size: 1.6rem; }
-    header p { margin: 4px 0 0; font-size: 0.9rem; font-style: italic; }
-    
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    header p {
+      margin: 0;
+      font-size: 0.8rem;
+      font-style: italic;
+      opacity: 0.9;
+    }
+
+    /* 4) Main flex container fills remaining space */
     .main {
       display: flex;
-      height: calc(100vh - 80px);
-      overflow: hidden;
+      height: calc(100% - 60px);  /* full height minus header */
     }
+
+    /* 5) Sheet occupies 75% of width, panel 25% */
     .sheet {
       flex: 3;
-      min-width: 60%;
-      padding: 0.5rem;
+      height: 100%;
     }
     .sheet iframe {
-      width: 100%; height: 100%; border: none; border-radius: 6px;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 6px;
     }
-    
+
     .panel {
       flex: 1;
-      min-width: 280px;
+      height: 100%;
       background: #fff;
-      padding: 1rem;
       border-left: 1px solid #ddd;
+      padding: 1rem;
+      box-shadow: -2px 0 6px rgba(0,0,0,0.05);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
     .panel h2 {
-      margin-top: 0;
-      font-size: 1.1rem;
-      text-align: center;
+      margin: 0 0 1rem;
+      font-size: 1rem;
       color: #003366;
+      text-align: center;
     }
     .panel label {
       font-weight: 600;
-      margin-top: 0.8rem;
       font-size: 0.9rem;
+      margin-top: 0.8rem;
     }
     .panel input[type="number"],
     .panel textarea {
       width: 100%;
       padding: 0.4rem;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       margin-top: 0.3rem;
       border-radius: 4px;
       border: 1px solid #ccc;
     }
     .panel textarea {
-      height: 160px;
+      flex: 1;                /* take up all leftover vertical space */
       resize: vertical;
+      margin-bottom: 0.5rem;
     }
     .panel button {
+      width: 100%;
+      padding: 0.6rem;
       margin-top: 0.5rem;
-      padding: 0.5rem;
-      font-size: 0.9rem;
       background: #007bff;
       color: #fff;
       border: none;
       border-radius: 4px;
+      font-size: 0.9rem;
       cursor: pointer;
-      width: 100%;
     }
     .panel button:hover {
       background: #0056b3;
@@ -99,36 +124,28 @@
       text-align: center;
       font-weight: bold;
       margin-top: 1rem;
-      font-size: 1rem;
+      font-size: 0.9rem;
       color: #444;
-    }
-    #installBtn {
-      background: #28a745;
     }
     .signature {
       text-align: center;
-      font-size: 0.8rem;
-      margin-top: 1rem;
+      font-size: 0.75rem;
       color: #888;
-    }
-    
-    @media (max-width: 768px) {
-      .main { flex-direction: column; height: auto; }
-      .sheet, .panel { height: auto; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>📞 Sales Dialer - Future Smart Logistics</h1>
-    <p>Track calls, log notes & reach leads effectively</p>
+    <div>
+      <h1>📞 Sales Dialer - Future Smart Logistics</h1>
+      <p>Track calls, log notes & reach leads effectively</p>
+    </div>
   </header>
 
   <div class="main">
     <div class="sheet">
       <iframe
-        id="sheetFrame"
         src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQHAylQdwmgOaWzvATwSkV9Ax79cjjGWMkhJNf31JCggH8Zp79-I6TEgafLW514osMIeKKzo9CWl_ES/pubhtml?widget=true&amp;headers=false">
       </iframe>
     </div>
@@ -136,8 +153,10 @@
     <div class="panel">
       <div>
         <h2>Call Tracker</h2>
+
         <label for="serialInput">Last Dialed Serial:</label>
         <input type="number" id="serialInput" value="0" />
+
         <button onclick="incrementSerial(5)">➕ Increment by 5</button>
         <div class="next-serial">
           📌 Next Serial: <span id="nextSerial">1 – 5</span>
@@ -148,8 +167,8 @@
         <button onclick="saveNotes()">💾 Save Notes</button>
         <button onclick="openFindDialog()">🔍 How to Find Number</button>
 
-        <!-- Install prompt button -->
-        <button id="installBtn" style="display:none" onclick="installApp()">
+        <!-- PWA install prompt will show here -->
+        <button id="installBtn" style="display:none; background:#28a745;">
           🚀 Install App
         </button>
       </div>
@@ -158,10 +177,10 @@
   </div>
 
   <script>
-    // Zoom / serial logic
+    // Serial logic
     const serialInput = document.getElementById('serialInput');
-    const nextSerial = document.getElementById('nextSerial');
-    const callNotes = document.getElementById('callNotes');
+    const nextSerial   = document.getElementById('nextSerial');
+    const callNotes    = document.getElementById('callNotes');
 
     function updateNextSerial() {
       const c = parseInt(serialInput.value)||0;
@@ -175,10 +194,10 @@
       alert("Press Ctrl+F (or ⌘+F) to search within this page.");
     }
     function saveNotes() {
-      const blob = new Blob([callNotes.value], {type:"text/plain"});
+      const blob = new Blob([callNotes.value], { type: 'text/plain' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = "call-notes.txt";
+      a.download = 'call-notes.txt';
       a.click();
     }
     serialInput.addEventListener('input', updateNextSerial);
@@ -190,12 +209,11 @@
       e.preventDefault();
       deferredPrompt = e;
       document.getElementById('installBtn').style.display = 'block';
+      document.getElementById('installBtn').addEventListener('click', () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.finally(() => deferredPrompt = null);
+      });
     });
-    function installApp() {
-      document.getElementById('installBtn').style.display = 'none';
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(() => deferredPrompt = null);
-    }
 
     // Register service worker
     if ('serviceWorker' in navigator) {
