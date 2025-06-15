@@ -4,8 +4,10 @@ self.addEventListener('install', e => {
       cache.addAll([
         '.',
         'index.html',
-        'favicon.ico',
         'manifest.json',
+        'favicon.ico',
+        'favicon-192.png',
+        'favicon-512.png',
         'sw.js'
       ])
     )
