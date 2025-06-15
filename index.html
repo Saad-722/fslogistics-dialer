@@ -3,160 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  
   <title>Future Smart Logistics</title>
-  <!-- Favicon for modern browsers -->
+  <!-- Favicons & Manifest -->
   <link rel="icon"         href="icon-32.png"    sizes="32x32"   type="image/png">
   <link rel="icon"         href="icon-192.png"   sizes="192x192" type="image/png">
-  <!-- Fallback for older browsers -->
-  <link rel="shortcut icon" href="icon-32.png"   type="image/png">
+  <link rel="shortcut icon" href="icon-32.png"    type="image/png">
   <link rel="manifest"     href="manifest.json">
   <meta name="theme-color" content="#003366">
-  
-  <style>
-    /* 1) Enforce 75% zoom */
-    html {
-      zoom: 75%;
-    }
-    /* 2) Full‑height container */
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f9fc;
-      color: #333;
-      overflow: hidden;  /* prevent extra scrollbars */
-    }
 
-    /* 3) Header is a fixed 60px tall */
+  <style>
+    /* 75% overall zoom */
+    html { zoom: 75%; }
+    html, body {
+      margin: 0; padding: 0; height: 100%; overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f9fc; color: #333;
+    }
+    /* Header */
     header {
-      height: 60px;
-      line-height: 60px;
-      text-align: center;
-      background-color: #003366;
-      color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      height: 60px; line-height: 60px;
+      background: #003366; color: #fff;
+      text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       flex: 0 0 60px;
     }
-    header h1 {
-      margin: 0;
-      font-size: 1.2rem;
-      display: inline-block;
-      vertical-align: middle;
-    }
+    header h1 { display: inline; margin: 0; font-size: 1.2rem; vertical-align: middle; }
     header p {
-      margin: 0;
-      font-size: 0.8rem;
-      font-style: italic;
-      opacity: 0.9;
+      display: inline-block; margin: 0 0 0 1rem;
+      font-size: 0.9rem; font-style: italic;
+      border-bottom: 1px solid #fff; padding-bottom: 2px; opacity: 0.9;
     }
-
-    /* 4) Main flex container fills remaining space */
+    /* Main flex container */
     .main {
-      display: flex;
-      height: calc(100% - 60px);  /* full height minus header */
+      display: flex; height: calc(100% - 60px);
     }
-
-    /* 5) Sheet occupies 75% of width, panel 25% */
+    /* Sheet area */
     .sheet {
-      flex: 3;
-      height: 100%;
+      flex: 3; height: 100%;
     }
     .sheet iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 6px;
+      width: 100%; height: 100%; border: none; border-radius: 6px;
     }
-
+    /* Panel area */
     .panel {
-      flex: 1;
-      height: 100%;
-      background: #fff;
-      border-left: 1px solid #ddd;
-      padding: 1rem;
-      box-shadow: -2px 0 6px rgba(0,0,0,0.05);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      flex: 1; height: 100%;
+      background: #fff; border-left: 1px solid #ddd;
+      padding: 1rem; box-shadow: -2px 0 6px rgba(0,0,0,0.05);
+      display: flex; flex-direction: column; justify-content: space-between;
     }
     .panel h2 {
-      margin: 0 0 1rem;
-      font-size: 1rem;
-      color: #003366;
-      text-align: center;
+      margin: 0 0 1rem; font-size: 1rem; color: #003366; text-align: center;
     }
     .panel label {
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-top: 0.8rem;
+      display: block; margin-top: 0.8rem; font-weight: 600; font-size: 0.9rem;
     }
-    .panel input[type="number"],
-    .panel textarea {
-      width: 100%;
-      padding: 0.4rem;
-      font-size: 0.9rem;
-      margin-top: 0.3rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+    .panel input, .panel select, .panel textarea {
+      width: 100%; padding: 0.4rem; margin-top: 0.3rem;
+      font-size: 0.9rem; border: 1px solid #ccc; border-radius: 4px;
     }
-    .panel textarea {
-      flex: 1;                /* take up all leftover vertical space */
-      resize: vertical;
-      margin-bottom: 0.5rem;
+    .panel textarea { height: 100px; resize: vertical; }
+    .dispatch-form {
+      margin-top: 1rem; padding: 0.5rem; border:1px solid #ccc; border-radius:4px;
+      max-height: 200px; overflow-y: auto;
     }
     .panel button {
-      width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.5rem;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      cursor: pointer;
+      width: 100%; padding: 0.6rem; margin-top: 0.5rem;
+      background: #007bff; color: #fff; border: none; border-radius: 4px;
+      font-size: 0.9rem; cursor: pointer;
     }
-    .panel button:hover {
-      background: #0056b3;
-    }
+    .panel button:hover { background: #0056b3; }
     .next-serial {
-      text-align: center;
-      font-weight: bold;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #444;
+      text-align: center; margin-top: 1rem; font-weight: bold; font-size: 0.9rem;
+    }
+    #installBtn {
+      background: #28a745; display: none;
     }
     .signature {
-      text-align: center;
-      font-size: 0.75rem;
-      color: #888;
+      text-align: center; font-size: 0.75rem; color: #888; margin-top: 1rem;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div>
-      <h1>📞 Sales Dialer - Future Smart Logistics</h1>
-      <p>Track calls, log notes & reach leads effectively</p>
-    </div>
+    <h1>📞 Sales Dialer - Future Smart Logistics</h1>
+    <p>Track calls, log notes & reach leads effectively</p>
   </header>
 
   <div class="main">
+    <!-- Google Sheet -->
     <div class="sheet">
-      <iframe
-        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQHAylQdwmgOaWzvATwSkV9Ax79cjjGWMkhJNf31JCggH8Zp79-I6TEgafLW514osMIeKKzo9CWl_ES/pubhtml?widget=true&amp;headers=false">
-      </iframe>
+      <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQHAylQdwmgOaWzvATwSkV9Ax79cjjGWMkhJNf31JCggH8Zp79-I6TEgafLW514osMIeKKzo9CWl_ES/pubhtml?widget=true&amp;headers=false"></iframe>
     </div>
 
+    <!-- Control Panel -->
     <div class="panel">
-      <div>
+      <div style="overflow:auto; flex:1;">
         <h2>Call Tracker</h2>
 
         <label for="serialInput">Last Dialed Serial:</label>
-        <input type="number" id="serialInput" value="0" />
-
+        <input type="number" id="serialInput" value="0"/>
         <button onclick="incrementSerial(5)">➕ Increment by 5</button>
         <div class="next-serial">
           📌 Next Serial: <span id="nextSerial">1 – 5</span>
@@ -165,58 +110,179 @@
         <label for="callNotes">📝 Notes:</label>
         <textarea id="callNotes" placeholder="Write call details here..."></textarea>
         <button onclick="saveNotes()">💾 Save Notes</button>
-        <button onclick="openFindDialog()">🔍 How to Find Number</button>
 
-        <!-- PWA install prompt will show here -->
-        <button id="installBtn" style="display:none; background:#28a745;">
-          🚀 Install App
-        </button>
+        <!-- Dispatch Lead Form -->
+        <div class="dispatch-form">
+          <h3 style="margin:0 0.5rem;font-size:0.95rem;color:#003366;">🚚 Dispatch Lead Form</h3>
+
+          <label for="mc">MC#:</label>
+          <input type="text" id="mc" placeholder="MC-1600017"/>
+
+          <label>Equipment (1 or 2):</label>
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <select id="equip1">
+              <option value="">— Select —</option>
+              <option>BX</option><option>PO</option><option>DV</option>
+              <option>FB</option><option>RF</option><option>Other</option>
+            </select>
+            <input type="text" id="equip1Other" placeholder="Specify" style="display:none; flex:1;"/>
+
+            <select id="equip2">
+              <option value="">— Optional —</option>
+              <option>BX</option><option>PO</option><option>DV</option>
+              <option>FB</option><option>RF</option><option>Other</option>
+            </select>
+            <input type="text" id="equip2Other" placeholder="Specify" style="display:none; flex:1;"/>
+          </div>
+
+          <label>Length (1 or 2):</label>
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <select id="length1">
+              <option value="">— Select —</option>
+              <option>53</option><option>48</option><option>26</option><option>Other</option>
+            </select>
+            <input type="number" id="length1Other" placeholder="ft" style="display:none;width:60px;"/>
+
+            <select id="length2">
+              <option value="">— Optional —</option>
+              <option>53</option><option>48</option><option>26</option><option>Other</option>
+            </select>
+            <input type="number" id="length2Other" placeholder="ft" style="display:none;width:60px;"/>
+          </div>
+
+          <label for="lp">L/P:</label>
+          <select id="lp"><option>Loaded</option><option>Empty</option></select>
+
+          <label for="zip">Zip Code:</label>
+          <input type="text" id="zip" placeholder="12345"/>
+
+          <label for="haulType">Haul Type:</label>
+          <select id="haulType"><option>Short Haul</option><option>Long Haul</option></select>
+
+          <label>RPM Short (min–max):</label>
+          <div style="display:flex; gap:0.3rem;">
+            <input type="number" id="rpmShortMin" placeholder="min"/>
+            <input type="number" id="rpmShortMax" placeholder="max"/>
+          </div>
+
+          <label>RPM Long (min–max):</label>
+          <div style="display:flex; gap:0.3rem;">
+            <input type="number" id="rpmLongMin" placeholder="min"/>
+            <input type="number" id="rpmLongMax" placeholder="max"/>
+          </div>
+
+          <label for="pct">Rate (%):</label>
+          <input type="number" id="pct" placeholder="1.5"/>
+
+          <label for="dispatcherComment">Comment for Dispatcher:</label>
+          <textarea id="dispatcherComment" placeholder="Special instructions..."></textarea>
+        </div>
+
+        <button onclick="saveLead()">💾 Save Lead</button>
       </div>
+
+      <button id="installBtn">🚀 Install App</button>
       <div class="signature">Developed by Skp Dispatch Solutions</div>
     </div>
   </div>
 
   <script>
     // Serial logic
-    const serialInput = document.getElementById('serialInput');
-    const nextSerial   = document.getElementById('nextSerial');
-    const callNotes    = document.getElementById('callNotes');
-
-    function updateNextSerial() {
+    const serialInput = document.getElementById('serialInput'),
+          nextSerial   = document.getElementById('nextSerial'),
+          callNotes    = document.getElementById('callNotes');
+    function updateNextSerial(){
       const c = parseInt(serialInput.value)||0;
       nextSerial.textContent = `${c+1} – ${c+5}`;
     }
-    function incrementSerial(n) {
+    function incrementSerial(n){
       serialInput.value = (parseInt(serialInput.value)||0) + n;
       updateNextSerial();
-    }
-    function openFindDialog() {
-      alert("Press Ctrl+F (or ⌘+F) to search within this page.");
-    }
-    function saveNotes() {
-      const blob = new Blob([callNotes.value], { type: 'text/plain' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'call-notes.txt';
-      a.click();
     }
     serialInput.addEventListener('input', updateNextSerial);
     updateNextSerial();
 
-    // PWA install flow
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('installBtn').style.display = 'block';
-      document.getElementById('installBtn').addEventListener('click', () => {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.finally(() => deferredPrompt = null);
+    // Notes save
+    function saveNotes(){
+      const blob = new Blob([callNotes.value],{type:'text/plain'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'notes.txt';
+      a.click();
+    }
+
+    // “Other” toggles
+    [['equip1','equip1Other'],['equip2','equip2Other'],['length1','length1Other'],['length2','length2Other']]
+      .forEach(([selId, otherId]) => {
+        const sel = document.getElementById(selId),
+              other = document.getElementById(otherId);
+        sel.addEventListener('change', ()=> {
+          if(sel.value==='Other') other.style.display='block';
+          else { other.style.display='none'; other.value=''; }
+        });
       });
+
+    // Save Lead
+    function saveLead(){
+      const mc    = document.getElementById('mc').value;
+      const phone = document.getElementById('phone').value;
+      const e1    = document.getElementById('equip1'),
+            e2    = document.getElementById('equip2'),
+            eo1   = document.getElementById('equip1Other'),
+            eo2   = document.getElementById('equip2Other');
+      const valEquip1 = e1.value==='Other'? eo1.value : e1.value,
+            valEquip2 = e2.value==='Other'? eo2.value : e2.value;
+      const equipList = [valEquip1,valEquip2].filter(v=>v).join(', ');
+      const l1    = document.getElementById('length1'),
+            l2    = document.getElementById('length2'),
+            lo1   = document.getElementById('length1Other'),
+            lo2   = document.getElementById('length2Other');
+      const valLen1 = l1.value==='Other'? lo1.value : l1.value,
+            valLen2 = l2.value==='Other'? lo2.value : l2.value;
+      const lengthList = [valLen1,valLen2].filter(v=>v).join(', ');
+      const lp    = document.getElementById('lp').value;
+      const zip   = document.getElementById('zip').value;
+      const haul  = document.getElementById('haulType').value;
+      const rpmS  = document.getElementById('rpmShortMin').value + '–' + document.getElementById('rpmShortMax').value;
+      const rpmL  = document.getElementById('rpmLongMin').value  + '–' + document.getElementById('rpmLongMax').value;
+      const pct   = document.getElementById('pct').value + '%';
+      const comment = document.getElementById('dispatcherComment').value;
+
+      const fields = [
+        ['MC#', mc],
+        ['Phone', phone],
+        ['Equipment', equipList],
+        ['Length', lengthList],
+        ['L/P', lp],
+        ['Zip', zip],
+        ['Haul Type', haul],
+        ['RPM Short', rpmS],
+        ['RPM Long', rpmL],
+        ['Rate %', pct],
+        ['Dispatcher Note', comment]
+      ];
+      let txt = '--- Dispatch Lead ---\n';
+      fields.forEach(f=> txt += `${f[0]}: ${f[1]}\n`);
+      const blob = new Blob([txt],{type:'text/plain'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'lead.txt';
+      a.click();
+    }
+
+    // PWA Install flow
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', e=>{
+      e.preventDefault(); deferredPrompt=e;
+      document.getElementById('installBtn').style.display='block';
+      document.getElementById('installBtn').onclick=()=>{
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.finally(()=>deferredPrompt=null);
+      };
     });
 
-    // Register service worker
-    if ('serviceWorker' in navigator) {
+    // Register SW
+    if('serviceWorker' in navigator){
       navigator.serviceWorker.register('sw.js').catch(console.error);
     }
   </script>
