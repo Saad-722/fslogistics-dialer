@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Future Smart Logistics</title>
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#003366">
+
+  <style>
+    /* Zoom the entire page to 75% */
+    html {
+      zoom: 75%;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f8fa;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 0.8rem;
+      background-color: #003366;
+      color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    header h1 { margin: 0; font-size: 1.6rem; }
+    header p { margin: 4px 0 0; font-size: 0.9rem; font-style: italic; }
+
+    .main {
+      display: flex;
+      height: calc(100vh - 80px);
+      overflow: hidden;
+    }
+    .sheet {
+      flex: 3; min-width: 60%; padding: 0.5rem;
+    }
+    .sheet iframe {
+      width: 100%; height: 100%; border: none; border-radius: 6px;
+    }
+
+    .panel {
+      flex: 1; min-width: 280px;
+      background: #fff; padding: 1rem; border-left: 1px solid #ddd;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .panel h2 { margin-top: 0; font-size: 1.1rem; text-align: center; color: #003366; }
+    .panel label { font-weight: 600; margin-top: 0.8rem; font-size: 0.9rem; }
+    .panel input, .panel textarea {
+      width: 100%; padding: 0.4rem; font-size: 0.95rem; margin-top: 0.3rem;
+      border-radius: 4px; border: 1px solid #ccc;
+    }
+    .panel textarea { height: 100px; resize: vertical; }
+
+    .panel button {
+      margin-top: 0.5rem; padding: 0.5rem; font-size: 0.9rem;
+      background: #007bff; color: white; border: none; border-radius: 4px;
+      cursor: pointer; width: 100%;
+    }
+    .panel button:hover { background: #0056b3; }
+
+    .next-serial {
+      text-align: center; font-weight: bold; margin-top: 1rem; font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .main { flex-direction: column; height: auto; }
+      .sheet, .panel { height: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>📞 Sales Dialer - Future Smart Logistics</h1>
+    <p>Track calls, log notes & reach leads effectively</p>
+  </header>
+
+  <div class="main">
+    <div class="sheet">
+      <iframe
+        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQHAylQdwmgOaWzvATwSkV9Ax79cjjGWMkhJNf31JCggH8Zp79-I6TEgafLW514osMIeKKzo9CWl_ES/pubhtml?widget=true&amp;headers=false"
+        id="sheetFrame"
+      ></iframe>
+    </div>
+
+    <div class="panel">
+      <div>
+        <h2>Call Tracker</h2>
+        <label for="serialInput">Last Dialed Serial:</label>
+        <input type="number" id="serialInput" value="0" />
+        <button onclick="incrementSerial(5)">➕ Increment by 5</button>
+        <div class="next-serial">
+          📌 Next Serial: <span id="nextSerial">5</span>
+        </div>
+
+        <label for="phoneInput">Phone Number:</label>
+        <input type="text" id="phoneInput" placeholder="(555) 123-4567" />
+
+        <label for="callNotes">📝 Notes:</label>
+        <textarea id="callNotes" placeholder="Write call details here..."></textarea>
+
+        <label for="searchBox">🔍 Search Number:</label>
+        <input type="text" id="searchBox" placeholder="(520) 339-2050"
+               onkeypress="if(event.key==='Enter') searchNumber()" />
+        <button onclick="searchNumber()">Search Now</button>
+      </div>
+
+      <div>
+        <button onclick="sendToDispatcher()">📤 Send to Dispatcher</button>
+        <button onclick="sendToManager()">📧 Send to Manager</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // PWA service-worker registration
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .catch(err => console.warn('SW failed: ', err));
+    }
+
+    const serialInput = document.getElementById('serialInput');
+    const nextSerial = document.getElementById('nextSerial');
+    const phoneInput = document.getElementById('phoneInput');
+    const callNotes = document.getElementById('callNotes');
+    const searchBox = document.getElementById('searchBox');
+
+    function updateNextSerial() {
+      const current = parseInt(serialInput.value) || 0;
+      nextSerial.textContent = current + 5;
+    }
+    function incrementSerial(amount) {
+      let current = parseInt(serialInput.value) || 0;
+      current += amount;
+      serialInput.value = current;
+      updateNextSerial();
+    }
+    function sendToDispatcher() {
+      const sub = encodeURIComponent("New Lead - Future Smart Logistics");
+      const bd = encodeURIComponent(`Phone: ${phoneInput.value}\nNotes:\n${callNotes.value}`);
+      window.location.href = `mailto:robertzane7272@gmail.com?subject=${sub}&body=${bd}`;
+    }
+    function sendToManager() {
+      const sub = encodeURIComponent("Manager Brief - Call Summary");
+      const bd = encodeURIComponent(`Phone: ${phoneInput.value}\nNotes:\n${callNotes.value}`);
+      window.location.href = `mailto:?subject=${sub}&body=${bd}`;
+    }
+    function searchNumber() {
+      const term = searchBox.value.trim();
+      if (term) window.find(term);
+    }
+
+    serialInput.addEventListener("input", updateNextSerial);
+    updateNextSerial();
+  </script>
+
+</body>
+</html>
