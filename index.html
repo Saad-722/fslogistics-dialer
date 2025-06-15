@@ -1,266 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Future Smart Logistics</title>
-
-  <!-- Favicons & Manifest -->
-  <link rel="icon"         href="icon-32.png"    sizes="32x32"   type="image/png">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="shortcut icon" href="icon-32.png"    type="image/png">
-  <link rel="manifest"     href="manifest.json">
-  <meta name="theme-color" content="#003366">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call Tracker & Lead Form</title>
   <style>
-    /* 75% zoom */
-    html { zoom:75%; }
-    html, body {
-      margin:0; padding:0; height:100%; overflow:hidden;
-      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background:#f5f9fc; color:#333;
+    body { font-family: sans-serif; background: #f4f6f8; color: #333; margin: 0; padding: 2rem; }
+    .container { max-width: 1200px; margin: auto; }
+    .box { background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 1rem; margin-bottom: 2rem; }
+    .sheet-iframe { width: 100%; height: 60vh; border: none; border-radius: 4px; }
+    .label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+    input[type="text"], input[type="number"] {
+      width: 100%; padding: 0.5rem; font-size: 1rem; margin-bottom: 1rem;
+      border: 1px solid #ccc; border-radius: 4px;
     }
-    /* Header */
-    header {
-      height:60px; line-height:60px; background:#003366; color:#fff;
-      text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.1);
+    select { width: 100%; padding: 0.5rem; font-size: 1rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; }
+    .buttons { display: flex; gap: 0.5rem; }
+    .buttons button {
+      flex: 1; padding: 0.75rem; font-size: 1rem;
+      border: none; border-radius: 4px; cursor: pointer;
+      background: #007bff; color: #fff;
+      transition: background 0.2s;
     }
-    header h1 { margin:0; font-size:1.2rem; display:inline; vertical-align:middle; }
-
-    /* Main */
-    .main { display:flex; height:calc(100% - 60px); }
-    .sheet {
-      flex:3; height:100%;
-    }
-    .sheet iframe {
-      width:100%; height:100%; border:none; border-radius:6px;
-    }
-    .panel {
-      flex:1; height:100%; background:#fff; border-left:1px solid #ddd;
-      display:flex; flex-direction:column; box-shadow:-2px 0 6px rgba(0,0,0,0.05);
-      padding:0;
-    }
-    /* Split panel into two equal halves + footer */
-    .panel .half {
-      flex:1; padding:1rem; overflow:auto;
-    }
-    .panel .footer {
-      padding:0.5rem 1rem;
-    }
-    h2 { margin:0; text-align:center; color:#003366; font-size:1rem; }
-
-    /* Common form styles */
-    .panel label {
-      display:block; margin-top:0.8rem; font-weight:600; font-size:0.9rem;
-    }
-    .panel input, .panel select, .panel textarea {
-      width:100%; padding:0.4rem; margin-top:0.3rem;
-      border:1px solid #ccc; border-radius:4px; font-size:0.9rem;
-    }
-    .panel textarea { resize:vertical; }
-
-    /* Buttons */
-    .panel button {
-      width:100%; padding:0.6rem; margin-top:0.5rem;
-      background:#007bff; color:#fff; border:none; border-radius:4px;
-      font-size:0.9rem; cursor:pointer;
-    }
-    .panel button:hover { background:#0056b3; }
-    #installBtn { background:#28a745; display:none; }
-
-    .signature {
-      text-align:center; font-size:0.75rem; color:#888; margin-top:0.5rem;
-    }
+    .buttons button:hover { background: #0056b3; }
+    .output { margin-top: 1rem; font-size: 1.25rem; }
   </style>
 </head>
 <body>
+  <div class="container">
 
-  <header>
-    <h1>📞 Sales Dialer - Future Smart Logistics</h1>
-  </header>
-
-  <div class="main">
-    <!-- Left: Google Sheet -->
-    <div class="sheet">
-      <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQHAylQdwmgOaWzvATwSkV9Ax79cjjGWMkhJNf31JCggH8Zp79-I6TEgafLW514osMIeKKzo9CWl_ES/pubhtml?widget=true&amp;headers=false"></iframe>
+    <div class="box">
+      <input type="text" id="searchBox" placeholder="Search by name, number, city...">
     </div>
 
-    <!-- Right: Panel -->
-    <div class="panel">
-      <!-- Top half: Notes + Find -->
-      <div class="half">
-        <h2>📝 Call Notes</h2>
-        <textarea id="callNotes" placeholder="Write call details here..." style="height:100%;"></textarea>
-        <button onclick="saveNotes()">💾 Save Notes</button>
-        <button onclick="openFindDialog()">🔍 How to Find Number</button>
+    <div class="box">
+      <iframe
+        class="sheet-iframe"
+        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQHAylQdwmgOaWzvATwSkV9Ax79cjjGWMkhJNf31JCggH8Zp79-I6TEgafLW514osMIeKKzo9CWl_ES/pubhtml?widget=true&headers=false"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="box">
+      <label class="label" for="lastSerial">Last Dialed Serial Number:</label>
+      <input type="number" id="lastSerial" placeholder="Enter last serial (e.g. 550)">
+      <div class="buttons">
+        <button onclick="increment(1)">+1</button>
+        <button onclick="increment(2)">+2</button>
+        <button onclick="increment(5)">+5</button>
       </div>
-
-      <!-- Bottom half: Dispatch Lead Form -->
-      <div class="half">
-        <h2>🚚 Dispatch Lead Form</h2>
-
-        <label for="mc">MC#:</label>
-        <input type="text" id="mc" placeholder="MC-1600017"/>
-
-        <!-- Equipment -->
-        <label>Equipment (1 or 2):</label>
-        <div style="display:flex; gap:0.5rem;">
-          <div style="flex:1;">
-            <select id="equip1">
-              <option value="">— Select —</option>
-              <option>BX</option><option>PO</option><option>DV</option>
-              <option>FB</option><option>RF</option><option>Other</option>
-            </select>
-            <input type="text" id="equip1Other" placeholder="Specify" style="display:none; margin-top:0.3rem;"/>
-          </div>
-          <div style="flex:1;">
-            <select id="equip2">
-              <option value="">— Optional —</option>
-              <option>BX</option><option>PO</option><option>DV</option>
-              <option>FB</option><option>RF</option><option>Other</option>
-            </select>
-            <input type="text" id="equip2Other" placeholder="Specify" style="display:none; margin-top:0.3rem;"/>
-          </div>
-        </div>
-
-        <!-- Length -->
-        <label>Length (1 or 2):</label>
-        <div style="display:flex; gap:0.5rem;">
-          <div style="flex:1;">
-            <select id="length1">
-              <option value="">— Select —</option>
-              <option>53</option><option>48</option><option>26</option><option>Other</option>
-            </select>
-            <input type="number" id="length1Other" placeholder="ft" style="display:none; margin-top:0.3rem; width:80px;"/>
-          </div>
-          <div style="flex:1;">
-            <select id="length2">
-              <option value="">— Optional —</option>
-              <option>53</option><option>48</option><option>26</option><option>Other</option>
-            </select>
-            <input type="number" id="length2Other" placeholder="ft" style="display:none; margin-top:0.3rem; width:80px;"/>
-          </div>
-        </div>
-
-        <label for="lp">L/P (Yes/No):</label>
-        <select id="lp"><option>Yes</option><option>No</option></select>
-
-        <label for="zip">Zip Code:</label>
-        <input type="text" id="zip" placeholder="12345"/>
-
-        <label for="haulType">Haul Type:</label>
-        <select id="haulType"><option>Short Haul</option><option>Long Haul</option></select>
-
-        <label>RPM Short (min–max):</label>
-        <div style="display:flex; gap:0.3rem;">
-          <input type="number" id="rpmShortMin" placeholder="min"/>
-          <input type="number" id="rpmShortMax" placeholder="max"/>
-        </div>
-
-        <label>RPM Long (min–max):</label>
-        <div style="display:flex; gap:0.3rem;">
-          <input type="number" id="rpmLongMin" placeholder="min"/>
-          <input type="number" id="rpmLongMax" placeholder="max"/>
-        </div>
-
-        <label for="pct">Dispatch Rate (%):</label>
-        <input type="number" id="pct" placeholder="e.g. 1.5"/>
-
-        <label for="dispatcherComment">Comment for Dispatcher:</label>
-        <textarea id="dispatcherComment" placeholder="Any special instructions..."></textarea>
-
-        <button onclick="saveLead()">💾 Save Lead</button>
-      </div>
-
-      <!-- Footer: Install + Signature -->
-      <div class="footer">
-        <button id="installBtn">🚀 Install App</button>
-        <div class="signature">Developed by Skp Dispatch Solutions</div>
+      <div class="output">
+        Next Serial: <span id="nextSerial">—</span>
       </div>
     </div>
+
+    <div class="box">
+      <h2>Lead Form</h2>
+      <label class="label">Name</label>
+      <input type="text" id="name">
+
+      <label class="label">Number</label>
+      <input type="text" id="number">
+
+      <label class="label">City</label>
+      <input type="text" id="city">
+
+      <label class="label">Haul Type</label>
+      <select id="haul">
+        <option value="">--Select Haul Type--</option>
+        <option value="Short Haul">Short Haul</option>
+        <option value="Long Haul">Long Haul</option>
+      </select>
+
+      <div class="buttons">
+        <button onclick="saveLead()">Save Lead</button>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    // Serial increment (unchanged)
-    const serialInput = document.getElementById('serialInput'),
-          nextSerial   = document.getElementById('nextSerial');
-    function updateNextSerial(){
-      const c = parseInt(serialInput.value)||0;
-      nextSerial.textContent = `${c+1} – ${c+5}`;
-    }
-    function incrementSerial(n){
-      serialInput.value = (parseInt(serialInput.value)||0)+n;
-      updateNextSerial();
-    }
-    serialInput && serialInput.addEventListener('input',updateNextSerial);
-    serialInput && updateNextSerial();
-
-    // Save Notes
-    const callNotes = document.getElementById('callNotes');
-    function saveNotes(){
-      const blob = new Blob([callNotes.value],{type:'text/plain'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'notes.txt';
-      a.click();
+    function increment(amount) {
+      const input = document.getElementById('lastSerial');
+      let current = parseInt(input.value, 10);
+      if (isNaN(current)) current = 0;
+      const next = current + amount;
+      input.value = next;
+      document.getElementById('nextSerial').textContent = next;
     }
 
-    // Find dialog
-    function openFindDialog(){
-      alert("Press Ctrl+F (Cmd+F) to search within the sheet panel.");
-    }
+    function saveLead() {
+      const name = document.getElementById('name').value.trim();
+      const number = document.getElementById('number').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const haul = document.getElementById('haul').value;
 
-    // “Other” toggles
-    [['equip1','equip1Other'],['equip2','equip2Other'],['length1','length1Other'],['length2','length2Other']]
-      .forEach(([s,o])=>{
-        const sel=document.getElementById(s), other=document.getElementById(o);
-        sel.addEventListener('change',()=>{
-          if(sel.value==='Other') other.style.display='block';
-          else { other.style.display='none'; other.value=''; }
-        });
-      });
+      if (!name || !number || !city || !haul) {
+        alert("Please fill all fields.");
+        return;
+      }
 
-    // Save Lead
-    function saveLead(){
-      const getVal=(id, otherId)=>
-        (v=> v==='Other' ? document.getElementById(otherId).value : v)
-          (document.getElementById(id).value);
-      const fields = [
-        ['MC#',    document.getElementById('mc').value],
-        ['Phone',  document.getElementById('phone').value],
-        ['Equip',  [getVal('equip1','equip1Other'),getVal('equip2','equip2Other')].filter(x=>x).join(' + ')],
-        ['Length', [getVal('length1','length1Other'),getVal('length2','length2Other')].filter(x=>x).join(' + ')],
-        ['L/P',    document.getElementById('lp').value],
-        ['Zip',    document.getElementById('zip').value],
-        ['Haul',   document.getElementById('haulType').value],
-        ['RPM S',  document.getElementById('rpmShortMin').value+'–'+document.getElementById('rpmShortMax').value],
-        ['RPM L',  document.getElementById('rpmLongMin').value+'–'+document.getElementById('rpmLongMax').value],
-        ['Rate%',  document.getElementById('pct').value+'%'],
-        ['Comment',document.getElementById('dispatcherComment').value]
-      ];
-      let txt='--- Dispatch Lead ---\n';
-      fields.forEach(f=>txt+=`${f[0]}: ${f[1]}\n`);
-      const blob=new Blob([txt],{type:'text/plain'});
-      const a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);
-      a.download='lead.txt';
-      a.click();
-    }
+      console.log("Lead Saved:", { name, number, city, haul });
+      alert("Lead saved! (Check console)");
 
-    // PWA install flow
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', e=>{
-      e.preventDefault(); deferredPrompt=e;
-      document.getElementById('installBtn').style.display='block';
-      document.getElementById('installBtn').onclick=()=>{
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.finally(()=>deferredPrompt=null);
-      };
-    });
-
-    // Service worker
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('sw.js').catch(console.error);
+      document.getElementById('name').value = "";
+      document.getElementById('number').value = "";
+      document.getElementById('city').value = "";
+      document.getElementById('haul').value = "";
     }
   </script>
 </body>
