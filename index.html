@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Future Smart Logistics</title>
   <!-- Favicons & Manifest -->
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" sizes="32x32" type="image/x-icon">
+  <link rel="apple-touch-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#003366">
   <style>
-    html { zoom:75%; }
+    html { zoom:100%; }
     html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#f5f9fc; color:#333; font-family:'Segoe UI',sans-serif; }
     header { height:60px; line-height:60px; background:#003366; color:#fff; text-align:center; }
     header h1 { margin:0; font-size:1.2rem; }
@@ -29,6 +30,8 @@
     .notes-section .buttons { display:flex; gap:0.5rem; }
     .notes-section .buttons button { flex:1; padding:0.6rem; font-size:0.9rem; background:#007bff; color:#fff; border:none; border-radius:4px; cursor:pointer; }
     .notes-section .buttons button:hover { background:#0056b3; }
+    #installBtn { display:none; margin-top:1rem; padding:0.75rem; background:#28a745; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+    #installBtn:hover { background:#218838; }
     .signature { text-align:center; font-size:0.75rem; color:#888; margin-top:1rem; }
   </style>
 </head>
@@ -60,18 +63,55 @@
   </div>
   <script>
     // Notes auto-save
-    const notes = document.getElementById('callNotes'); const KEY='fslogistics_notes';
-    notes.value=localStorage.getItem(KEY)||''; notes.addEventListener('input',()=>localStorage.setItem(KEY,notes.value));
-    function saveNotes(){const b=new Blob([notes.value],{type:'text/plain'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='notes.txt';a.click();}
-    function openFindDialog(){alert('Press Ctrl+F (Cmd+F) to search within the sheet.');}
-    // Serial
-    const serial=document.getElementById('serialInput'), next=document.getElementById('nextSerial');
-    function updateNext(){const c=parseInt(serial.value)||0; next.textContent=`Next Serial: ${c+1} - ${c+5}`;}    
-    function incrementSerial(n){serial.value=(parseInt(serial.value)||0)+n; updateNext();}
-    serial.addEventListener('input',updateNext); updateNext();
-    // PWA
-    let dp; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;document.getElementById('installBtn').style.display='block';document.getElementById('installBtn').onclick=()=>{dp.prompt();dp.userChoice.finally(()=>dp=null);};});
-    if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(console.error);
+    const notes = document.getElementById('callNotes');
+    const KEY = 'fslogistics_notes';
+    notes.value = localStorage.getItem(KEY) || '';
+    notes.addEventListener('input', () => localStorage.setItem(KEY, notes.value));
+
+    function saveNotes() {
+      const blob = new Blob([notes.value], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'notes.txt';
+      a.click();
+    }
+
+    function openFindDialog() {
+      alert('Press Ctrl+F (Cmd+F) to search within the sheet.');
+    }
+
+    // Serial numbering
+    const serial = document.getElementById('serialInput');
+    const next = document.getElementById('nextSerial');
+
+    function updateNext() {
+      const c = parseInt(serial.value) || 0;
+      next.textContent = `Next Serial: ${c + 1} - ${c + 5}`;
+    }
+
+    function incrementSerial(n) {
+      serial.value = (parseInt(serial.value) || 0) + n;
+      updateNext();
+    }
+
+    serial.addEventListener('input', updateNext);
+    updateNext();
+
+    // PWA install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBtn').style.display = 'block';
+      document.getElementById('installBtn').onclick = () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.finally(() => deferredPrompt = null);
+      };
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(console.error);
+    }
   </script>
 </body>
 </html>
