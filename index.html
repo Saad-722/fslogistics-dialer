@@ -53,7 +53,7 @@
     #installBtn { background:#28a745; display:none; }
 
     .serial-box {
-      margin-top:1rem; display:flex; align-items:center; gap:0.5rem;
+      margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem;
     }
     .serial-box input {
       width:60px; padding:0.4rem; font-size:0.9rem;
@@ -75,18 +75,20 @@
     </div>
 
     <div class="panel">
-      <h2>📝 Call Notes</h2>
-      <textarea id="callNotes" placeholder="Write call details here..."></textarea>
-      <button onclick="saveNotes()">💾 Save Notes</button>
-      <button onclick="openFindDialog()">🔍 How to Find Number</button>
-
+      <!-- Call Counter on Top -->
       <div class="serial-box">
-        <label for="serialInput">Serial:</label>
+        <label for="serialInput">Last Dialed Serial:</label>
         <input id="serialInput" type="number" value="0"/>
         <button onclick="incrementSerial(1)">+1</button>
         <button onclick="incrementSerial(5)">+5</button>
         <span id="nextSerial"></span>
       </div>
+
+      <!-- Notes Section Below -->
+      <h2>📝 Call Notes</h2>
+      <textarea id="callNotes" placeholder="Write call details here..."></textarea>
+      <button onclick="saveNotes()">💾 Save Notes</button>
+      <button onclick="openFindDialog()">🔍 How to Find Number</button>
 
       <button id="installBtn">🚀 Install App</button>
       <div class="signature">Developed by Skp Dispatch Solutions</div>
@@ -97,51 +99,32 @@
     // Auto-save notes to localStorage
     const callNotes = document.getElementById('callNotes');
     const NOTES_KEY = 'fslogistics_notes';
-    // Load saved notes
     callNotes.value = localStorage.getItem(NOTES_KEY) || '';
-    // Save on change
-    callNotes.addEventListener('input', () => {
-      localStorage.setItem(NOTES_KEY, callNotes.value);
-    });
+    callNotes.addEventListener('input', () => localStorage.setItem(NOTES_KEY, callNotes.value));
+
     function saveNotes(){
-      // Also trigger download
-      const notes = callNotes.value;
-      const blob = new Blob([notes],{type:'text/plain'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'notes.txt';
-      a.click();
+      const blob = new Blob([callNotes.value],{type:'text/plain'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = 'notes.txt'; a.click();
     }
-    function openFindDialog(){
-      alert('Press Ctrl+F (Cmd+F) to search within the sheet panel.');
-    }
+    function openFindDialog(){ alert('Press Ctrl+F (Cmd+F) to search within the sheet panel.'); }
 
     // Serial logic
     const serialInput = document.getElementById('serialInput');
     const nextSerial  = document.getElementById('nextSerial');
-    function updateNextSerial(){
-      const c = parseInt(serialInput.value)||0;
-      nextSerial.textContent = `Next: ${c+1} → ${c+5}`;
+    function updateNextSerial(){ const c = parseInt(serialInput.value)||0;
+      nextSerial.textContent = `Next: ${c+1} - ${c+5}`;
     }
-    function incrementSerial(n){
-      serialInput.value = (parseInt(serialInput.value)||0)+n;
-      updateNextSerial();
-    }
-    serialInput.addEventListener('input', updateNextSerial);
-    updateNextSerial();
+    function incrementSerial(n){ serialInput.value = (parseInt(serialInput.value)||0)+n; updateNextSerial(); }
+    serialInput.addEventListener('input', updateNextSerial); updateNextSerial();
 
     // PWA install
     let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', e=>{
-      e.preventDefault(); deferredPrompt=e;
+    window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredPrompt=e;
       document.getElementById('installBtn').style.display='block';
-      document.getElementById('installBtn').onclick=()=>{
-        deferredPrompt.prompt(); deferredPrompt.userChoice.finally(()=>deferredPrompt=null);
-      };
+      document.getElementById('installBtn').onclick=()=>{ deferredPrompt.prompt(); deferredPrompt.userChoice.finally(()=>deferredPrompt=null); };
     });
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('sw.js').catch(console.error);
-    }
+    if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(console.error);
   </script>
 </body>
 </html>
