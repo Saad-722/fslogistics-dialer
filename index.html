@@ -3,71 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
   <title>Future Smart Logistics</title>
-
-  <!-- PWA manifest -->
+  
+  <!-- Favicon & Manifest -->
+  <link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#003366">
-
+  
   <style>
-    /* Zoom the entire page to 75% */
-    html {
-      zoom: 75%;
-    }
-
+    /* Zoom everything to 75% */
+    html { zoom: 75%; }
+    
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f8fa;
+      background: #f5f9fc;
       color: #333;
     }
-
     header {
       text-align: center;
       padding: 0.8rem;
       background-color: #003366;
-      color: white;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     header h1 { margin: 0; font-size: 1.6rem; }
     header p { margin: 4px 0 0; font-size: 0.9rem; font-style: italic; }
-
+    
     .main {
       display: flex;
       height: calc(100vh - 80px);
       overflow: hidden;
     }
     .sheet {
-      flex: 3; min-width: 60%; padding: 0.5rem;
+      flex: 3;
+      min-width: 60%;
+      padding: 0.5rem;
     }
     .sheet iframe {
       width: 100%; height: 100%; border: none; border-radius: 6px;
     }
-
+    
     .panel {
-      flex: 1; min-width: 280px;
-      background: #fff; padding: 1rem; border-left: 1px solid #ddd;
-      display: flex; flex-direction: column; justify-content: space-between;
+      flex: 1;
+      min-width: 280px;
+      background: #fff;
+      padding: 1rem;
+      border-left: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    .panel h2 { margin-top: 0; font-size: 1.1rem; text-align: center; color: #003366; }
-    .panel label { font-weight: 600; margin-top: 0.8rem; font-size: 0.9rem; }
-    .panel input, .panel textarea {
-      width: 100%; padding: 0.4rem; font-size: 0.95rem; margin-top: 0.3rem;
-      border-radius: 4px; border: 1px solid #ccc;
+    .panel h2 {
+      margin-top: 0;
+      font-size: 1.1rem;
+      text-align: center;
+      color: #003366;
     }
-    .panel textarea { height: 100px; resize: vertical; }
-
+    .panel label {
+      font-weight: 600;
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+    }
+    .panel input[type="number"],
+    .panel textarea {
+      width: 100%;
+      padding: 0.4rem;
+      font-size: 0.95rem;
+      margin-top: 0.3rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .panel textarea {
+      height: 160px;
+      resize: vertical;
+    }
     .panel button {
-      margin-top: 0.5rem; padding: 0.5rem; font-size: 0.9rem;
-      background: #007bff; color: white; border: none; border-radius: 4px;
-      cursor: pointer; width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
     }
-    .panel button:hover { background: #0056b3; }
-
+    .panel button:hover {
+      background: #0056b3;
+    }
     .next-serial {
-      text-align: center; font-weight: bold; margin-top: 1rem; font-size: 1rem;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: #444;
     }
-
+    #installBtn {
+      background: #28a745;
+    }
+    .signature {
+      text-align: center;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      color: #888;
+    }
+    
     @media (max-width: 768px) {
       .main { flex-direction: column; height: auto; }
       .sheet, .panel { height: auto; }
@@ -84,9 +128,9 @@
   <div class="main">
     <div class="sheet">
       <iframe
-        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQHAylQdwmgOaWzvATwSkV9Ax79cjjGWMkhJNf31JCggH8Zp79-I6TEgafLW514osMIeKKzo9CWl_ES/pubhtml?widget=true&amp;headers=false"
         id="sheetFrame"
-      ></iframe>
+        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQHAylQdwmgOaWzvATwSkV9Ax79cjjGWMkhJNf31JCggH8Zp79-I6TEgafLW514osMIeKKzo9CWl_ES/pubhtml?widget=true&amp;headers=false">
+      </iframe>
     </div>
 
     <div class="panel">
@@ -96,69 +140,67 @@
         <input type="number" id="serialInput" value="0" />
         <button onclick="incrementSerial(5)">➕ Increment by 5</button>
         <div class="next-serial">
-          📌 Next Serial: <span id="nextSerial">5</span>
+          📌 Next Serial: <span id="nextSerial">1 – 5</span>
         </div>
-
-        <label for="phoneInput">Phone Number:</label>
-        <input type="text" id="phoneInput" placeholder="(555) 123-4567" />
 
         <label for="callNotes">📝 Notes:</label>
         <textarea id="callNotes" placeholder="Write call details here..."></textarea>
+        <button onclick="saveNotes()">💾 Save Notes</button>
+        <button onclick="openFindDialog()">🔍 How to Find Number</button>
 
-        <label for="searchBox">🔍 Search Number:</label>
-        <input type="text" id="searchBox" placeholder="(520) 339-2050"
-               onkeypress="if(event.key==='Enter') searchNumber()" />
-        <button onclick="searchNumber()">Search Now</button>
+        <!-- Install prompt button -->
+        <button id="installBtn" style="display:none" onclick="installApp()">
+          🚀 Install App
+        </button>
       </div>
-
-      <div>
-        <button onclick="sendToDispatcher()">📤 Send to Dispatcher</button>
-        <button onclick="sendToManager()">📧 Send to Manager</button>
-      </div>
+      <div class="signature">Developed by Skp Dispatch Solutions</div>
     </div>
   </div>
 
   <script>
-    // PWA service-worker registration
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
-        .catch(err => console.warn('SW failed: ', err));
-    }
-
+    // Zoom / serial logic
     const serialInput = document.getElementById('serialInput');
     const nextSerial = document.getElementById('nextSerial');
-    const phoneInput = document.getElementById('phoneInput');
     const callNotes = document.getElementById('callNotes');
-    const searchBox = document.getElementById('searchBox');
 
     function updateNextSerial() {
-      const current = parseInt(serialInput.value) || 0;
-      nextSerial.textContent = current + 5;
+      const c = parseInt(serialInput.value)||0;
+      nextSerial.textContent = `${c+1} – ${c+5}`;
     }
-    function incrementSerial(amount) {
-      let current = parseInt(serialInput.value) || 0;
-      current += amount;
-      serialInput.value = current;
+    function incrementSerial(n) {
+      serialInput.value = (parseInt(serialInput.value)||0) + n;
       updateNextSerial();
     }
-    function sendToDispatcher() {
-      const sub = encodeURIComponent("New Lead - Future Smart Logistics");
-      const bd = encodeURIComponent(`Phone: ${phoneInput.value}\nNotes:\n${callNotes.value}`);
-      window.location.href = `mailto:robertzane7272@gmail.com?subject=${sub}&body=${bd}`;
+    function openFindDialog() {
+      alert("Press Ctrl+F (or ⌘+F) to search within this page.");
     }
-    function sendToManager() {
-      const sub = encodeURIComponent("Manager Brief - Call Summary");
-      const bd = encodeURIComponent(`Phone: ${phoneInput.value}\nNotes:\n${callNotes.value}`);
-      window.location.href = `mailto:?subject=${sub}&body=${bd}`;
+    function saveNotes() {
+      const blob = new Blob([callNotes.value], {type:"text/plain"});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "call-notes.txt";
+      a.click();
     }
-    function searchNumber() {
-      const term = searchBox.value.trim();
-      if (term) window.find(term);
-    }
-
-    serialInput.addEventListener("input", updateNextSerial);
+    serialInput.addEventListener('input', updateNextSerial);
     updateNextSerial();
-  </script>
 
+    // PWA install flow
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBtn').style.display = 'block';
+    });
+    function installApp() {
+      document.getElementById('installBtn').style.display = 'none';
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => deferredPrompt = null);
+    }
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(console.error);
+    }
+  </script>
 </body>
 </html>
