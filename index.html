@@ -60,74 +60,58 @@
     </div>
   </div>
   <script>
-    // Total calls counter
-    const totalEl = document.getElementById('totalCount');
+    // Simple Calls counter
     const TOTAL_KEY = 'fslogistics_total_calls';
+    const totalEl = document.getElementById('totalCount');
 
     function loadTotal() {
       return parseInt(localStorage.getItem(TOTAL_KEY)) || 0;
     }
-
     function saveTotal(val) {
       localStorage.setItem(TOTAL_KEY, val);
     }
-
-    // Daily call counter
-    const dailyEl = document.getElementById('dailyCount');
-    const DAILY_KEY = 'fslogistics_daily_calls';
-
-    function loadDaily() {
-      const data = JSON.parse(localStorage.getItem(DAILY_KEY) || '{}');
-      const today = new Date().toISOString().split('T')[0];
-      return data[today] || 0;
-    }
-
-    function saveDaily(count) {
-      const data = JSON.parse(localStorage.getItem(DAILY_KEY) || '{}');
-      const today = new Date().toISOString().split('T')[0];
-      data[today] = count;
-      localStorage.setItem(DAILY_KEY, JSON.stringify(data));
-    }
-
-    function updateDisplays() {
+    function updateTotalDisplay() {
       totalEl.textContent = loadTotal();
-      dailyEl.textContent = loadDaily();
     }
+
+    // Load initial value
+    updateTotalDisplay();
 
     // Call Now logic
     document.getElementById('callNowBtn').addEventListener('click', () => {
       const num = document.getElementById('phoneInput').value.trim();
       if (!num) return alert('Enter a phone number');
+      // Open new window/tab
       window.open(`https://voice.google.com/u/0/calls?a=nc,%2B${num}`, '_blank');
 
-      // Increment total
-      let t = loadTotal() + 1;
-      saveTotal(t);
-      // Increment daily
-      let d = loadDaily() + 1;
-      saveDaily(d);
-      updateDisplays();
+      // Increment total calls
+      let total = loadTotal() + 1;
+      saveTotal(total);
+      updateTotalDisplay();
+
+      // Existing daily counter (unchanged)
+      const DAILY_KEY = 'fslogistics_daily_calls';
+      let dailyData = JSON.parse(localStorage.getItem(DAILY_KEY) || '{}');
+      const today = new Date().toISOString().split('T')[0];
+      dailyData[today] = (dailyData[today] || 0) + 1;
+      localStorage.setItem(DAILY_KEY, JSON.stringify(dailyData));
+      document.getElementById('dailyCount').textContent = dailyData[today];
     });
 
     // Notes auto-save
-    const notes = document.getElementById('callNotes'); const NOTES_KEY='fslogistics_notes';
+    const notes = document.getElementById('callNotes');
+    const NOTES_KEY = 'fslogistics_notes';
     notes.value = localStorage.getItem(NOTES_KEY) || '';
-    notes.addEventListener('input', ()=>localStorage.setItem(NOTES_KEY, notes.value));
+    notes.addEventListener('input', () => localStorage.setItem(NOTES_KEY, notes.value));
 
     function saveNotes() {
-      const blob = new Blob([notes.value], { type: 'text/plain' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'notes.txt';
-      a.click();
+      const blob = new Blob([notes.value], { type: 'text/plain' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = 'notes.txt'; a.click();
     }
-
     function openFindDialog() {
       alert('Press Ctrl+F (Cmd+F) to search within the sheet.');
     }
-
-    // Init display
-    updateDisplays();
   </script>
 </body>
 </html>
