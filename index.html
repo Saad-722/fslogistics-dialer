@@ -4,47 +4,32 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Future Smart Logistics</title>
-
-  <!-- Favicons & PWA manifest -->
-  <link rel="icon"   href="favicon.ico"           type="image/x-icon">
-  <link rel="apple-touch-icon" href="favicon-192.png">
+  <!-- Favicons & Manifest -->
+  <link rel="icon" href="favicon.ico" sizes="32x32" type="image/x-icon">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#003366">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-
   <style>
     html { zoom:100%; }
-    html, body { margin:0; padding:0; height:100%; overflow:hidden;
-                 background:#f5f9fc; color:#333; font-family:'Segoe UI',sans-serif; }
+    html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#f5f9fc; color:#333; font-family:'Segoe UI',sans-serif; }
     header { height:60px; line-height:60px; background:#003366; color:#fff; text-align:center; }
     header h1 { margin:0; font-size:1.2rem; }
     .main { display:flex; height:calc(100% - 60px); }
     .sheet { flex:3; padding:0.5rem; }
     .sheet iframe { width:100%; height:100%; border:none; border-radius:6px; }
-    .panel { flex:1; max-width:350px; background:#fff; border-left:1px solid #ddd;
-             display:flex; flex-direction:column; padding:1rem; box-shadow:-2px 0 6px rgba(0,0,0,0.05); }
+    .panel { flex:1; max-width:350px; background:#fff; border-left:1px solid #ddd; display:flex; flex-direction:column; padding:1rem; box-shadow:-2px 0 6px rgba(0,0,0,0.05); }
+    .total-counter { text-align:center; font-size:1.2rem; font-weight:600; margin-bottom:1rem; color:#003366; }
     .tracker-title { text-align:center; color:#003366; font-size:1.2rem; margin-bottom:1rem; }
-    .call-counter { margin-bottom:1rem; }
-    .call-counter label { display:block; margin-bottom:0.25rem; font-weight:600; }
-    .call-counter input { width:100%; padding:0.5rem; font-size:1rem; border:1px solid #ccc;
-                          border-radius:4px; margin-bottom:0.75rem; }
-    .call-counter button { width:100%; padding:0.75rem; font-size:1rem; background:#007bff;
-                           color:#fff; border:none; border-radius:4px; cursor:pointer; }
-    .call-counter button:hover { background:#0056b3; }
-    #nextSerial { margin-top:0.75rem; text-align:center; font-size:1.5rem;
-                  font-weight:bold; color:#d9534f; }
+    .call-section { margin-bottom:1rem; }
+    .call-section label { display:block; margin-bottom:0.25rem; font-weight:600; }
+    .call-section input { width:100%; padding:0.5rem; font-size:1rem; border:1px solid #ccc; border-radius:4px; margin-bottom:0.5rem; }
+    .call-section button { width:100%; padding:0.75rem; font-size:1rem; background:#007bff; color:#fff; border:none; border-radius:4px; cursor:pointer; margin-bottom:0.5rem; }
+    .call-section button:hover { background:#0056b3; }
+    .counter { text-align:center; font-size:1.25rem; font-weight:bold; color:#d9534f; margin-top:0.5rem; }
     .notes-section { flex:1; display:flex; flex-direction:column; }
-    .notes-section textarea { flex:1; padding:0.5rem; font-size:0.9rem;
-                              border:1px solid #ccc; border-radius:4px; resize:none; margin-bottom:0.5rem; }
+    .notes-section textarea { flex:1; padding:0.5rem; font-size:0.9rem; border:1px solid #ccc; border-radius:4px; resize:none; margin-bottom:0.5rem; }
     .notes-section .buttons { display:flex; gap:0.5rem; }
-    .notes-section .buttons button { flex:1; padding:0.6rem; font-size:0.9rem;
-                                     background:#007bff; color:#fff; border:none; border-radius:4px;
-                                     cursor:pointer; }
+    .notes-section .buttons button { flex:1; padding:0.6rem; font-size:0.9rem; background:#007bff; color:#fff; border:none; border-radius:4px; cursor:pointer; }
     .notes-section .buttons button:hover { background:#0056b3; }
-    #installBtn { display:none; margin-top:1rem; padding:0.75rem; background:#28a745;
-                  color:#fff; border:none; border-radius:4px; cursor:pointer; }
-    #installBtn:hover { background:#218838; }
     .signature { text-align:center; font-size:0.75rem; color:#888; margin-top:1rem; }
   </style>
 </head>
@@ -55,32 +40,79 @@
       <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQHAylQdwmgOaWzvATwSkV9Ax79cjjGWMkhJNf31JCggH8Zp79-I6TEgafLW514osMIeKKzo9CWl_ES/pubhtml?widget=true&amp;headers=false"></iframe>
     </div>
     <div class="panel">
-      <div class="call-counter">
-        <div class="tracker-title">Call Tracker</div>
-        <label for="serialInput">Last Dialed Serial:</label>
-        <input id="serialInput" type="number" value="0"/>
-        <button onclick="incrementSerial(5)">➕ Increment by 5</button>
-        <div id="nextSerial"></div>
+      <div class="total-counter">Calls: <span id="totalCount">0</span></div>
+      <div class="tracker-title">Call Tracker</div>
+      <div class="call-section">
+        <label for="phoneInput">Phone Number:</label>
+        <input id="phoneInput" type="tel" placeholder="e.g. 12679803710" />
+        <button id="callNowBtn">📲 Call Now</button>
+        <div class="counter">Calls Today: <span id="dailyCount">0</span></div>
       </div>
       <div class="notes-section">
         <h2>📝 Call Notes</h2>
-        <textarea id="callNotes" placeholder="Write call details here…"></textarea>
+        <textarea id="callNotes" placeholder="Write call details here..."></textarea>
         <div class="buttons">
           <button onclick="saveNotes()">💾 Save Notes</button>
           <button onclick="openFindDialog()">🔍 How to Find Number</button>
         </div>
       </div>
-      <button id="installBtn">🚀 Install App</button>
       <div class="signature">Developed by Skp Dispatch Solutions</div>
     </div>
   </div>
-
   <script>
-    // Auto‑save notes
-    const notes = document.getElementById('callNotes');
-    const KEY = 'fslogistics_notes';
-    notes.value = localStorage.getItem(KEY) || '';
-    notes.addEventListener('input', () => localStorage.setItem(KEY, notes.value));
+    // Total calls counter
+    const totalEl = document.getElementById('totalCount');
+    const TOTAL_KEY = 'fslogistics_total_calls';
+
+    function loadTotal() {
+      return parseInt(localStorage.getItem(TOTAL_KEY)) || 0;
+    }
+
+    function saveTotal(val) {
+      localStorage.setItem(TOTAL_KEY, val);
+    }
+
+    // Daily call counter
+    const dailyEl = document.getElementById('dailyCount');
+    const DAILY_KEY = 'fslogistics_daily_calls';
+
+    function loadDaily() {
+      const data = JSON.parse(localStorage.getItem(DAILY_KEY) || '{}');
+      const today = new Date().toISOString().split('T')[0];
+      return data[today] || 0;
+    }
+
+    function saveDaily(count) {
+      const data = JSON.parse(localStorage.getItem(DAILY_KEY) || '{}');
+      const today = new Date().toISOString().split('T')[0];
+      data[today] = count;
+      localStorage.setItem(DAILY_KEY, JSON.stringify(data));
+    }
+
+    function updateDisplays() {
+      totalEl.textContent = loadTotal();
+      dailyEl.textContent = loadDaily();
+    }
+
+    // Call Now logic
+    document.getElementById('callNowBtn').addEventListener('click', () => {
+      const num = document.getElementById('phoneInput').value.trim();
+      if (!num) return alert('Enter a phone number');
+      window.open(`https://voice.google.com/u/0/calls?a=nc,%2B${num}`, '_blank');
+
+      // Increment total
+      let t = loadTotal() + 1;
+      saveTotal(t);
+      // Increment daily
+      let d = loadDaily() + 1;
+      saveDaily(d);
+      updateDisplays();
+    });
+
+    // Notes auto-save
+    const notes = document.getElementById('callNotes'); const NOTES_KEY='fslogistics_notes';
+    notes.value = localStorage.getItem(NOTES_KEY) || '';
+    notes.addEventListener('input', ()=>localStorage.setItem(NOTES_KEY, notes.value));
 
     function saveNotes() {
       const blob = new Blob([notes.value], { type: 'text/plain' });
@@ -94,36 +126,8 @@
       alert('Press Ctrl+F (Cmd+F) to search within the sheet.');
     }
 
-    // Serial numbering
-    const serial = document.getElementById('serialInput');
-    const next   = document.getElementById('nextSerial');
-    function updateNext() {
-      const c = parseInt(serial.value) || 0;
-      next.textContent = `Next Serial: ${c+1} – ${c+5}`;
-    }
-    function incrementSerial(n) {
-      serial.value = (parseInt(serial.value)||0) + n;
-      updateNext();
-    }
-    serial.addEventListener('input', updateNext);
-    updateNext();
-
-    // PWA install prompt
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('installBtn').style.display = 'block';
-      document.getElementById('installBtn').onclick = () => {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.finally(() => deferredPrompt = null);
-      };
-    });
-
-    // Service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(console.error);
-    }
+    // Init display
+    updateDisplays();
   </script>
 </body>
 </html>
